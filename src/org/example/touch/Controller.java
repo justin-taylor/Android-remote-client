@@ -1,0 +1,209 @@
+// 	Copyright 2010 Justin Taylor
+// 	This software can be distributed under the terms of the
+// 	GNU General Public License. 
+
+package org.example.touch;
+
+import messages.Constants;
+import android.app.Activity;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.ImageView;
+
+import android.view.View.OnTouchListener;
+import android.view.View.OnKeyListener;
+import android.view.*;
+
+import android.widget.Button;
+import android.widget.EditText;
+import android.text.Editable;
+import android.text.TextWatcher;
+
+import android.view.inputmethod.InputMethodManager;
+import android.content.Context;
+
+public class Controller extends Activity implements OnTouchListener, OnKeyListener{
+	
+	float lastXpos = 0;
+	float lastYpos = 0;
+	
+	private int mouse_sensitivity = 1;
+	
+	boolean keyboard = false;
+	Thread checking;
+	
+	ImageView image;
+	
+	Button Left;
+	Button Right;
+	
+	protected void onCreate(Bundle savedInstanceState) {
+		
+		super.onCreate(savedInstanceState);
+	    setContentView(R.layout.control);
+		
+	    mouse_sensitivity = getIntent().getExtras().getInt("sensitivity");
+	    
+	    // Set the width of the buttons to half the screen size
+	 	Display display = getWindowManager().getDefaultDisplay(); 
+	 	int width = display.getWidth();
+	 	
+	 	Left = (Button) findViewById(R.id.LeftClickButton);
+	 	Right =  (Button) findViewById(R.id.RightClickButton);
+	 	
+	 	Left.setWidth(width/2);
+	 	Right.setWidth(width/2);
+	 	
+	 	Left.setOnTouchListener(this);
+	 	Right.setOnTouchListener(this);
+	 	
+	    View touchView = (View) findViewById(R.id.TouchPad);
+	    touchView.setOnTouchListener(this);
+	    
+	    EditText editText = (EditText) findViewById(R.id.KeyBoard);
+	    editText.setOnKeyListener(this);
+	    editText.addTextChangedListener(new TextWatcher(){
+		    public void  afterTextChanged (Editable s){
+		    	try{
+		    		sendToAppDel(Constants.KEYBOARD + s.toString());
+        		} catch(IndexOutOfBoundsException e){}
+		    	s.clear();
+		    } 
+		    
+	        public void  beforeTextChanged  (CharSequence s, int start, int count, int after){} 
+	        public void  onTextChanged  (CharSequence s, int start, int before, int count) {
+	        }
+	    });
+	}
+	
+	@Override
+	public boolean onTouch(View v, MotionEvent event) {
+		if(v == Left){
+			 switch ( event.getAction() ) {
+			    case MotionEvent.ACTION_DOWN: sendToAppDel(Constants.LEFTMOUSEDOWN); break;
+			    case MotionEvent.ACTION_UP: sendToAppDel(Constants.LEFTMOUSEUP); break;
+			 }
+		}else if( v == Right){
+			switch ( event.getAction() ) {
+		    	case MotionEvent.ACTION_DOWN: sendToAppDel(Constants.RIGHTMOUSEDOWN); break;
+		    	case MotionEvent.ACTION_UP: sendToAppDel(Constants.RIGHTMOUSEUP); break;
+			}
+		}
+		else
+			mousePadHandler(event);
+	 	
+		return true;
+	}
+	
+	// detect keyboard event
+	// and send to delegate
+	//@Override
+	public boolean onKey(View v, int c, KeyEvent event){
+		
+		// c is the event keycode
+		if(event.getAction() == 1)
+			sendToAppDel( "" + Constants.KEYCODE+c);
+	 	
+		// this will prevent the focus from moving off the text field
+	 	if(		c == KeyEvent.KEYCODE_DPAD_UP   ||
+	 			c == KeyEvent.KEYCODE_DPAD_DOWN ||
+	 			c == KeyEvent.KEYCODE_DPAD_LEFT ||
+	 			c == KeyEvent.KEYCODE_DPAD_RIGHT
+	 	)
+	 		return true;
+	 	
+	 	return false;
+	}
+	
+	// Show and hide Keyboard by setting the
+	// focus on a hidden text field
+    public void keyClickHandler(View v){
+    	EditText editText = (EditText) findViewById(R.id.KeyBoard);
+    	InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+    	if(keyboard){
+    		mgr.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+    		keyboard = false;
+    	}
+    	else{
+    		mgr.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+    		keyboard = true;
+    	}
+    }
+
+	// send message to AppDelegate class
+	// to be sent to server on client desktop
+	private void sendToAppDel(String message){
+		AppDelegate appDel = ((AppDelegate)getApplicationContext());
+		if(appDel.connected()){
+			appDel.sendMessage(message);
+		}
+		else{
+			finish();
+		}
+	}
+	
+	private void sendToAppDel(char c){
+		sendToAppDel(""+c);
+	}
+	
+	/*
+	public void setImage(Bitmap bit){
+		image.setImageBitmap(bit);
+	}
+	*/
+	
+	// send a mouse message
+    private void mousePadHandler(MotionEvent event) {
+ 	   int action = event.getAction();
+ 	   int touchCount = event.getPointerCount();
+ 	   
+	   // if a single touch
+ 	   if(touchCount == 1){ 		   
+			switch(action){
+			
+				case 0:	// touch down
+				 		lastXpos = event.getX();
+						lastYpos = event.getY();
+						break;
+				
+				case 1:	// touch up
+						long deltaTime = event.getEventTime() - event.getDownTime();
+						if(deltaTime < 250)
+							sendToAppDel(Constants.LEFTCLICK);
+						break;
+				
+				case 2: // moved
+					float deltaX = (lastXpos - event.getX()) * -1;
+					float deltaY = (lastYpos - event.getY()) * -1;
+					
+					sendToAppDel(Constants.createMoveMouseMessage(deltaX * mouse_sensitivity
+																, deltaY * mouse_sensitivity));
+						
+					lastXpos = event.getX();
+					lastYpos = event.getY();
+					break;
+						
+				default: break;
+			}
+ 	   }
+ 
+	   // if two touches send scroll message
+	   // based off MAC osx multi touch scrolls up and down
+ 	   else if(touchCount == 2){
+ 		   if(action == 2){
+ 			   
+ 				float deltaY = event.getY() - lastYpos;
+ 				float tolerance = 10;
+ 			   
+ 			   if (deltaY > tolerance){
+ 				  sendToAppDel(Constants.SCROLLUP);
+ 				  lastYpos = event.getY();
+ 			   }
+ 			   else if(deltaY < -1 * tolerance){
+ 				  sendToAppDel(Constants.SCROLLDOWN);
+ 				 lastYpos = event.getY();
+ 			   }
+ 		   }else lastYpos = event.getY();
+ 	   }
+ 	}
+}
