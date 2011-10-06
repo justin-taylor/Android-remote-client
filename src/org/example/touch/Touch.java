@@ -45,7 +45,6 @@ public class Touch extends Activity{
 	    // Set button listeners
 	    Button connectbutton = (Button) findViewById(R.id.Button01);
 	    connectbutton.setOnClickListener(new View.OnClickListener() {
-			@Override
 			public void onClick(View v) {
 				connectToServer();
 			}
@@ -53,7 +52,6 @@ public class Touch extends Activity{
 	    
 	    Button disconnectbutton = (Button) findViewById(R.id.Button02);
 	    disconnectbutton.setOnClickListener(new View.OnClickListener() {
-			@Override
 			public void onClick(View v) {
 				closeConnectionToServer();
 			}

@@ -76,7 +76,6 @@ public class Controller extends Activity implements OnTouchListener, OnKeyListen
 	    });
 	}
 	
-	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 		if(v == Left){
 			 switch ( event.getAction() ) {

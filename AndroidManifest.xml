@@ -20,7 +20,9 @@
          </intent-filter>
       </activity>
       
-      <activity android:name=".Controller"></activity>
+      <activity android:name=".Controller"
+      			android:configChanges="keyboardHidden|orientation">
+      </activity>
    
    </application>
    
