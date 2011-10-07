@@ -13,6 +13,7 @@ import android.content.DialogInterface;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
+import android.content.SharedPreferences;
 
 import android.util.Log;
 
@@ -23,6 +24,12 @@ public class Touch extends Activity{
 	private SeekBar sensitivity;
 	
 	private boolean firstRun = true;
+	
+	public static final String PREFS_NAME 		= "TouchSettings";
+	public static final String IP_PREF 			= "ip_pref";
+	public static final String PORT_PREF 		= "port_pref";
+	public static final String SENSITIVITY_PREF = "sens_pref";
+
 	
 /***********************************************************************************
 
@@ -41,12 +48,23 @@ public class Touch extends Activity{
 		
 		ipField.setText("192.168.1.2");	
 		portField.setText("5444");
-		
+	    
 	    // Set button listeners
 	    Button connectbutton = (Button) findViewById(R.id.Button01);
 	    connectbutton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				connectToServer();
+				
+				//Store used settings
+				SharedPreferences prefs = getSharedPreferences(PREFS_NAME, 0);
+				SharedPreferences.Editor editor = prefs.edit();
+				
+				editor.putInt(SENSITIVITY_PREF, sensitivity.getProgress());
+				editor.putString(PORT_PREF, portField.getText().toString());
+				editor.putString(IP_PREF, ipField.getText().toString());
+				
+				editor.commit();
+
 			}
 		});
 	    
@@ -63,6 +81,15 @@ public class Touch extends Activity{
 	protected void onResume(){
 		super.onResume();
 
+		SharedPreferences prefs = getSharedPreferences(PREFS_NAME, 0);
+		String ip = prefs.getString(IP_PREF, "192.168.1.2");
+	    String port = prefs.getString(PORT_PREF, "5554");
+	    int sens = prefs.getInt(SENSITIVITY_PREF, 0);
+		
+		ipField.setText(ip);
+		portField.setText(port);
+		sensitivity.setProgress(sens);
+	    
 		AppDelegate appDel = ((AppDelegate)getApplicationContext());
 		
 		if(!appDel.connected() && !firstRun){

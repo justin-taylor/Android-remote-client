@@ -14,6 +14,7 @@ import org.example.touch.ClientThread;
 public class AppDelegate extends Application {
 	
 	private ClientThread client;
+	private ClientListener listener;
 	private Controller controller;
 	
 	public void onCreate(){
@@ -22,6 +23,11 @@ public class AppDelegate extends Application {
 	
 	public void setController(Controller c){
 		controller	= c;
+	}
+	
+	public Controller getController()
+	{
+		return controller;
 	}
 	
 	
@@ -34,8 +40,12 @@ public class AppDelegate extends Application {
 	
 	public void createClientThread(String ipAddress, int port){
 		client = new ClientThread(ipAddress, port);
+		listener = new ClientListener(5555, this);
 		
 		Thread cThread = new Thread(client);
+	    cThread.start();
+	    
+	    cThread = new Thread(listener);
 	    cThread.start();
 	}
 	

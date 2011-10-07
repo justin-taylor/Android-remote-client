@@ -7,6 +7,8 @@ package org.example.touch;
 import messages.Constants;
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -16,11 +18,14 @@ import android.view.*;
 
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 
 import android.view.inputmethod.InputMethodManager;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 
 public class Controller extends Activity implements OnTouchListener, OnKeyListener{
 	
@@ -31,9 +36,7 @@ public class Controller extends Activity implements OnTouchListener, OnKeyListen
 	
 	boolean keyboard = false;
 	Thread checking;
-	
-	ImageView image;
-	
+		
 	Button Left;
 	Button Right;
 	
@@ -74,6 +77,9 @@ public class Controller extends Activity implements OnTouchListener, OnKeyListen
 	        public void  onTextChanged  (CharSequence s, int start, int before, int count) {
 	        }
 	    });
+	    
+	    AppDelegate appDel = ((AppDelegate)getApplicationContext());
+	    appDel.setController( this );
 	}
 	
 	public boolean onTouch(View v, MotionEvent event) {
@@ -145,11 +151,22 @@ public class Controller extends Activity implements OnTouchListener, OnKeyListen
 		sendToAppDel(""+c);
 	}
 	
-	/*
-	public void setImage(Bitmap bit){
-		image.setImageBitmap(bit);
+	
+	public void setImage(final Bitmap bit){
+		Handler handler = new Handler(Looper.getMainLooper());
+		handler.post(new Runnable() {
+			@Override
+			public void run() {
+				LinearLayout layout = (LinearLayout) findViewById(R.id.TouchPad);
+				BitmapDrawable drawable = new BitmapDrawable( bit );
+				layout.setBackgroundDrawable( drawable );
+				
+				Log.d("herro", "der Setting Image");
+			}
+		});
+		
+
 	}
-	*/
 	
 	// send a mouse message
     private void mousePadHandler(MotionEvent event) {
