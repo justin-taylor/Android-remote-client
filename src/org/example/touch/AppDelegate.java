@@ -7,7 +7,6 @@ package org.example.touch;
 import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
-import android.util.Log;
 
 import org.example.touch.ClientThread;
 
@@ -38,9 +37,10 @@ public class AppDelegate extends Application {
 	
 ***********************************************************************************/
 	
-	public void createClientThread(String ipAddress, int port){
+	public void createClientThread(String ipAddress, int port, int listenerPort){
+		
 		client = new ClientThread(ipAddress, port);
-		listener = new ClientListener(5555, this);
+		listener = new ClientListener(listenerPort, this);
 		
 		Thread cThread = new Thread(client);
 	    cThread.start();
@@ -59,6 +59,13 @@ public class AppDelegate extends Application {
 			client.closeSocket();
 		}
 		client = null;
+		
+		if(listener != null)
+		{
+			listener.closeSocket();
+		}
+		
+		listener = null;
 	}
 
 	

@@ -2,8 +2,7 @@
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
-  android:layout_height="fill_parent"
-  android:id="@+id/TouchPad">
+  android:layout_height="fill_parent">
 	
 	<LinearLayout
       android:orientation="vertical"
@@ -13,13 +12,16 @@
 	  	<LinearLayout
 	      android:orientation="vertical"
 	      android:layout_width="fill_parent"
-	      android:layout_height="fill_parent" android:layout_weight="1">
+	      android:layout_height="fill_parent"
+	      android:layout_weight="1"
+	      android:id="@+id/TouchPad">
 			
 			<Button android:text="  K  " 
 	  				android:id="@+id/keyboardbutton" 
 	  				android:layout_width="wrap_content" 
 	  				android:layout_height="wrap_content"
-	  				android:onClick="keyClickHandler" android:layout_gravity="right">
+	  				android:onClick="keyClickHandler"
+	  				android:layout_gravity="right">
 	  		</Button>
 	  	</LinearLayout>
 		
@@ -34,7 +36,6 @@
 	  				android:id="@+id/LeftClickButton" 
 	  				android:layout_width="wrap_content" 
 	  				android:layout_height="wrap_content">
-	  			<!--	android:onClick="LeftButtonClickHandler"> -->
 	  		</Button>
 	  		
 	  		<Button android:text="R" 
@@ -52,7 +53,10 @@
 		  	<EditText android:id="@+id/KeyBoard" 
 			  android:layout_width="wrap_content" 
 			  android:layout_height="wrap_content"
-			  android:inputType="textVisiblePassword" android:layout_gravity="right" android:text="  K  " android:focusable="true">
+			  android:inputType="textVisiblePassword"
+			  android:layout_gravity="right"
+			  android:text="  K  "
+			  android:focusable="true">
 			</EditText>
 
 </LinearLayout>

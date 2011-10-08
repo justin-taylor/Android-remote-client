@@ -159,9 +159,7 @@ public class Controller extends Activity implements OnTouchListener, OnKeyListen
 			public void run() {
 				LinearLayout layout = (LinearLayout) findViewById(R.id.TouchPad);
 				BitmapDrawable drawable = new BitmapDrawable( bit );
-				layout.setBackgroundDrawable( drawable );
-				
-				Log.d("herro", "der Setting Image");
+				layout.setBackgroundDrawable( drawable );				
 			}
 		});
 		

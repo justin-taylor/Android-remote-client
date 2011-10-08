@@ -15,12 +15,11 @@ import android.widget.EditText;
 import android.widget.SeekBar;
 import android.content.SharedPreferences;
 
-import android.util.Log;
-
 public class Touch extends Activity{
+	
 	private EditText ipField;
 	private EditText portField;
-	
+	private EditText listenerPortField;
 	private SeekBar sensitivity;
 	
 	private boolean firstRun = true;
@@ -28,6 +27,7 @@ public class Touch extends Activity{
 	public static final String PREFS_NAME 		= "TouchSettings";
 	public static final String IP_PREF 			= "ip_pref";
 	public static final String PORT_PREF 		= "port_pref";
+	public static final String LISTENER_PREF 	= "listener_pref";
 	public static final String SENSITIVITY_PREF = "sens_pref";
 
 	
@@ -44,11 +44,9 @@ public class Touch extends Activity{
 		
 		ipField = (EditText) findViewById(R.id.EditText01);
 		portField = (EditText) findViewById(R.id.EditText02);
+		listenerPortField = (EditText) findViewById(R.id.devicePort);
 		sensitivity = (SeekBar) findViewById(R.id.SeekBar01);
-		
-		ipField.setText("192.168.1.2");	
-		portField.setText("5444");
-	    
+	
 	    // Set button listeners
 	    Button connectbutton = (Button) findViewById(R.id.Button01);
 	    connectbutton.setOnClickListener(new View.OnClickListener() {
@@ -62,6 +60,7 @@ public class Touch extends Activity{
 				editor.putInt(SENSITIVITY_PREF, sensitivity.getProgress());
 				editor.putString(PORT_PREF, portField.getText().toString());
 				editor.putString(IP_PREF, ipField.getText().toString());
+				editor.putString(LISTENER_PREF, listenerPortField.getText().toString());
 				
 				editor.commit();
 
@@ -82,13 +81,17 @@ public class Touch extends Activity{
 		super.onResume();
 
 		SharedPreferences prefs = getSharedPreferences(PREFS_NAME, 0);
+		
 		String ip = prefs.getString(IP_PREF, "192.168.1.2");
 	    String port = prefs.getString(PORT_PREF, "5554");
+	    String listener = prefs.getString(LISTENER_PREF, "5555");
+	    
 	    int sens = prefs.getInt(SENSITIVITY_PREF, 0);
 		
 		ipField.setText(ip);
 		portField.setText(port);
 		sensitivity.setProgress(sens);
+		listenerPortField.setText(listener);
 	    
 		AppDelegate appDel = ((AppDelegate)getApplicationContext());
 		
@@ -156,13 +159,12 @@ public class Touch extends Activity{
 		}
 				
 		if(!appDel.connected()){
-			String serverIp;
-			int serverPort;
 			
-			serverIp = ipField.getText().toString();
-			serverPort = Integer.parseInt(portField.getText().toString());
+			String serverIp = ipField.getText().toString();
+			int serverPort = Integer.parseInt(portField.getText().toString());
+			int listenPort = Integer.parseInt(listenerPortField.getText().toString());
 			
-			appDel.createClientThread(serverIp, serverPort);
+			appDel.createClientThread(serverIp, serverPort, listenPort);
 		}
 		
 		//TODO find better way to check for connection to the server

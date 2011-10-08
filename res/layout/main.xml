@@ -26,6 +26,10 @@
 	  		<TextView android:text="PORT:" android:id="@+id/TextView02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textStyle="bold" android:textSize="20px" /> 
 	  		<EditText android:layout_height="wrap_content" android:text="@+id/EditText02" android:id="@+id/EditText02" android:layout_width="fill_parent" android:phoneNumber="true" android:maxWidth="230px" android:minWidth="230px" android:textStyle="normal" /> 
 	
+			<TextView android:text="Device PORT:" android:id="@+id/TextView02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textStyle="bold" android:textSize="20px" /> 
+	  		<EditText android:layout_height="wrap_content" android:text="@+id/EditText02" android:id="@+id/devicePort" android:layout_width="fill_parent" android:phoneNumber="true" android:maxWidth="230px" android:minWidth="230px" android:textStyle="normal" /> 
+		
+	
 	</TableLayout>
 	
 	<LinearLayout
