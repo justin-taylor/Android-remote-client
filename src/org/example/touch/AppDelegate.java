@@ -37,15 +37,19 @@ public class AppDelegate extends Application {
 	
 ***********************************************************************************/
 	
-	public void createClientThread(String ipAddress, int port, int listenerPort){
+	public void createClientThread(String ipAddress, int port){
 		
 		client = new ClientThread(ipAddress, port);
-		listener = new ClientListener(listenerPort, this);
 		
 		Thread cThread = new Thread(client);
 	    cThread.start();
-	    
-	    cThread = new Thread(listener);
+	}
+	
+	public void createScreenCaptureThread(int listenerPort, int fps)
+	{
+		listener = new ClientListener(listenerPort, fps, this);
+		
+		Thread cThread = new Thread(listener);
 	    cThread.start();
 	}
 	

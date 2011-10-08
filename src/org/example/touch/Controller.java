@@ -9,8 +9,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
-import android.widget.ImageView;
 
 import android.view.View.OnTouchListener;
 import android.view.View.OnKeyListener;
@@ -39,6 +37,9 @@ public class Controller extends Activity implements OnTouchListener, OnKeyListen
 		
 	Button Left;
 	Button Right;
+	
+	int count = 0;
+	int FRAME_RATE = 10;
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		

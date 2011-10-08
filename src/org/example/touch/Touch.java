@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.content.DialogInterface;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.content.SharedPreferences;
@@ -21,14 +22,20 @@ public class Touch extends Activity{
 	private EditText portField;
 	private EditText listenerPortField;
 	private SeekBar sensitivity;
+	private CheckBox useScreenCap;
+	private EditText frameRate;
 	
 	private boolean firstRun = true;
 	
 	public static final String PREFS_NAME 		= "TouchSettings";
+	
 	public static final String IP_PREF 			= "ip_pref";
 	public static final String PORT_PREF 		= "port_pref";
-	public static final String LISTENER_PREF 	= "listener_pref";
 	public static final String SENSITIVITY_PREF = "sens_pref";
+	
+	public static final String LISTENER_PORT_PREF 	= "listener_pref";
+	public static final String USE_SCREEN_CAP_PREF 	= "screen_pref";
+	public static final String FRAME_RATE_PREF 		= "rate_pref";
 
 	
 /***********************************************************************************
@@ -44,9 +51,13 @@ public class Touch extends Activity{
 		
 		ipField = (EditText) findViewById(R.id.EditText01);
 		portField = (EditText) findViewById(R.id.EditText02);
-		listenerPortField = (EditText) findViewById(R.id.devicePort);
 		sensitivity = (SeekBar) findViewById(R.id.SeekBar01);
-	
+		
+		
+		listenerPortField = (EditText) findViewById(R.id.devicePort);
+		useScreenCap = (CheckBox) findViewById(R.id.checkBox1);
+		frameRate = (EditText) findViewById(R.id.framerate);
+		
 	    // Set button listeners
 	    Button connectbutton = (Button) findViewById(R.id.Button01);
 	    connectbutton.setOnClickListener(new View.OnClickListener() {
@@ -60,7 +71,10 @@ public class Touch extends Activity{
 				editor.putInt(SENSITIVITY_PREF, sensitivity.getProgress());
 				editor.putString(PORT_PREF, portField.getText().toString());
 				editor.putString(IP_PREF, ipField.getText().toString());
-				editor.putString(LISTENER_PREF, listenerPortField.getText().toString());
+				
+				editor.putString(LISTENER_PORT_PREF, listenerPortField.getText().toString());
+				editor.putInt(FRAME_RATE_PREF, Integer.parseInt( frameRate.getText().toString()) );
+				editor.putBoolean(USE_SCREEN_CAP_PREF, useScreenCap.isChecked());
 				
 				editor.commit();
 
@@ -79,20 +93,26 @@ public class Touch extends Activity{
 	@Override
 	protected void onResume(){
 		super.onResume();
-
+		
 		SharedPreferences prefs = getSharedPreferences(PREFS_NAME, 0);
 		
 		String ip = prefs.getString(IP_PREF, "192.168.1.2");
 	    String port = prefs.getString(PORT_PREF, "5554");
-	    String listener = prefs.getString(LISTENER_PREF, "5555");
+	    String listener = prefs.getString(LISTENER_PORT_PREF, "5555");
+	    
+	    boolean useCap = prefs.getBoolean(USE_SCREEN_CAP_PREF, true);
+	    int framerate = prefs.getInt(FRAME_RATE_PREF, 10);
 	    
 	    int sens = prefs.getInt(SENSITIVITY_PREF, 0);
 		
 		ipField.setText(ip);
 		portField.setText(port);
 		sensitivity.setProgress(sens);
+		
 		listenerPortField.setText(listener);
-	    
+	    frameRate.setText(framerate+"");
+	    useScreenCap.setChecked(useCap);
+		
 		AppDelegate appDel = ((AppDelegate)getApplicationContext());
 		
 		if(!appDel.connected() && !firstRun){
@@ -163,8 +183,14 @@ public class Touch extends Activity{
 			String serverIp = ipField.getText().toString();
 			int serverPort = Integer.parseInt(portField.getText().toString());
 			int listenPort = Integer.parseInt(listenerPortField.getText().toString());
+			int fps = Integer.parseInt(frameRate.getText().toString());
+			appDel.createClientThread(serverIp, serverPort);
 			
-			appDel.createClientThread(serverIp, serverPort, listenPort);
+			if(useScreenCap.isChecked())
+			{
+				appDel.createScreenCaptureThread(listenPort, fps);
+		
+			}
 		}
 		
 		//TODO find better way to check for connection to the server
