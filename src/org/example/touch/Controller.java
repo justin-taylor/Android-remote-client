@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 
+import android.util.Log;
 import android.view.View.OnTouchListener;
 import android.view.View.OnKeyListener;
 import android.view.*;
@@ -22,6 +23,7 @@ import android.text.TextWatcher;
 
 import android.view.inputmethod.InputMethodManager;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 
@@ -61,6 +63,9 @@ public class Controller extends Activity implements OnTouchListener, OnKeyListen
 	 	Left.setOnTouchListener(this);
 	 	Right.setOnTouchListener(this);
 	 	
+	 	ClientListener.deviceWidth = width;
+	 	ClientListener.deviceHeight = display.getHeight() - Left.getHeight();
+	 	
 	    View touchView = (View) findViewById(R.id.TouchPad);
 	    touchView.setOnTouchListener(this);
 	    
@@ -81,6 +86,27 @@ public class Controller extends Activity implements OnTouchListener, OnKeyListen
 	    
 	    AppDelegate appDel = ((AppDelegate)getApplicationContext());
 	    appDel.setController( this );
+	}
+	
+	public void finish()
+	{
+		AppDelegate appDel = ((AppDelegate)getApplicationContext());
+		appDel.stopServer();
+		
+		super.finish();
+	}
+	
+	public void onConfigurationChanged(Configuration newConfig) {
+		Display display = getWindowManager().getDefaultDisplay(); 
+	 	int width = display.getWidth();
+	 	
+	 	Left.setWidth(width/2);
+	 	Right.setWidth(width/2);
+	 	
+	 	ClientListener.deviceWidth = width;
+	 	ClientListener.deviceHeight = display.getHeight() - Left.getHeight();
+	 	
+	 	super.onConfigurationChanged(newConfig);
 	}
 	
 	public boolean onTouch(View v, MotionEvent event) {
@@ -108,8 +134,9 @@ public class Controller extends Activity implements OnTouchListener, OnKeyListen
 		
 		// c is the event keycode
 		if(event.getAction() == 1)
+		{
 			sendToAppDel( "" + Constants.KEYCODE+c);
-	 	
+		}
 		// this will prevent the focus from moving off the text field
 	 	if(		c == KeyEvent.KEYCODE_DPAD_UP   ||
 	 			c == KeyEvent.KEYCODE_DPAD_DOWN ||

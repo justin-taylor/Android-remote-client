@@ -113,12 +113,7 @@ public class Touch extends Activity{
 	    frameRate.setText(framerate+"");
 	    useScreenCap.setChecked(useCap);
 		
-		AppDelegate appDel = ((AppDelegate)getApplicationContext());
-		
-		if(!appDel.connected() && !firstRun){
-			serverUnreachablealert();
-		}
-		
+		AppDelegate appDel = ((AppDelegate)getApplicationContext());		
 		appDel.stopServer();
 	}
 	

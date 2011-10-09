@@ -26,6 +26,9 @@ public class ClientListener implements Runnable{
 	private int framesPerSecond = -1;
 	public boolean connected = false;
 	
+	public static int deviceWidth = 100;
+	public static int deviceHeight = 100;
+	
 	public ClientListener(int port, int fps, AppDelegate del){
 		delegate = del;
 		framesPerSecond = fps;
@@ -41,74 +44,92 @@ public class ClientListener implements Runnable{
 		serverPort = port;
 	}
 	
+	
+	
 	public void run() {
 	       try {
 	           socket = new DatagramSocket(serverPort, serverAddr);
 	           connected = true;
 	           
-	           //Timer timer = new Timer();
-	           //timer.scheduleAtFixedRate(getImageTask, 0, 100);
+	           Timer timer = new Timer();
+	           int frames = 1000/framesPerSecond;
 	           
-	           listen();
+	           Log.e("FRAMES", ""+frames);
 	           
-	           delegate.sendMessage(Constants.REQUESTIMAGE+"");
+	           timer.scheduleAtFixedRate(getImageTask, 0, frames);
+	           
+	           listen();	           
 	       }
 	       catch (Exception e) {
 	           Log.e("ClientActivity", "Client Connection Error", e);
 	       }
-	   }
+	 }
 	
-		TimerTask getImageTask = new TimerTask(){
 	
-			@Override
-			public void run() {
-				 delegate.sendMessage(Constants.REQUESTIMAGE+"");
-			}
+	
+	private TimerTask getImageTask = new TimerTask(){
+
+		@Override
+		public void run() {
+			String message = new String(""+
+					Constants.REQUESTIMAGE+
+					 Constants.DELIMITER+
+					 deviceWidth+
+					 Constants.DELIMITER+
+					 deviceHeight+"");
 			
-		};
-	
-	  public void listen()
-	  {
-		   	Log.e("LISTENING", "LISTEING at "+serverAddr.getHostAddress()+" on "+serverPort);
-
-		   	while(connected){
-
-		   		try{
-		   			delegate.sendMessage(Constants.REQUESTIMAGE+"");
-		   			socket.receive(dgp);
-		   			Bitmap bm = BitmapFactory.decodeByteArray(dgp.getData(), 0, 65000);
-		   			//Looper.prepare();   
-		   			delegate.getController().setImage(bm);
-		   			Log.d("Testing", "Received image");
-
-		   		}catch(Exception e){
-		   			Log.d("Error", "Could not receive image");
-		   			e.printStackTrace();
-		   		}
-		   	}
-	  }
-	
-	   public static String getLocalIpAddress() {
-		    try {
-		        for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
-		            NetworkInterface intf = en.nextElement();
-		            for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
-		                InetAddress inetAddress = enumIpAddr.nextElement();
-		                if (!inetAddress.isLoopbackAddress()) {
-		                	Log.d("HERRO", inetAddress.getHostAddress().toString());
-		                    return inetAddress.getHostAddress().toString();
-		                }
-		            }
-		        }
-		    } catch (SocketException ex) {
-		        Log.e("", ex.toString());
-		    }
-		    return null;
+			Log.d("MESSAGE", message);
+			
+			 delegate.sendMessage(message);
 		}
-	   
-	   public void closeSocket(){
-		   	socket.close();
-		   	connected = false;
-	   }
-	   
+	};
+	
+	
+	
+	private void listen()
+	{
+	   	Log.e("LISTENING", "LISTEING at "+serverAddr.getHostAddress()+" on "+serverPort);
+
+	   	while(connected){
+
+	   		try{
+	   			socket.receive(dgp);
+	   			Bitmap bm = BitmapFactory.decodeByteArray(dgp.getData(), 0, 65000);
+	   			delegate.getController().setImage(bm);
+	   			Log.d("Testing", "Received image");
+
+	   		}catch(Exception e){
+	   			Log.d("Error", "Could not receive image");
+	   			e.printStackTrace();
+	   		}
+	   	}
+	}
+
+	
+	
+   public static String getLocalIpAddress() {
+	    try {
+	        for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+	            NetworkInterface intf = en.nextElement();
+	            for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+	                InetAddress inetAddress = enumIpAddr.nextElement();
+	                if (!inetAddress.isLoopbackAddress()) {
+	                	Log.d("HERRO", inetAddress.getHostAddress().toString());
+	                    return inetAddress.getHostAddress().toString();
+	                }
+	            }
+	        }
+	    } catch (SocketException ex) {
+	        Log.e("", ex.toString());
+	    }
+	    return null;
+	}
+   
+   
+   
+   public void closeSocket(){
+	   	socket.close();
+	   	connected = false;
+	   	getImageTask.cancel();
+   }
 }

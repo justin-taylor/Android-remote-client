@@ -55,13 +55,21 @@ public class ClientThread implements Runnable {
    }
    
    public void closeSocketNoMessge(){
-   	socket.close();
-   	connected = false;
+	   if(socket != null)
+	   {
+		   socket.close();
+	   }
+	   connected = false;
    }
    
    public void closeSocket(){
    	sendMessage(new String("Close"));
-   	socket.close();
+   	
+   	if(socket != null)
+   	{
+		   socket.close();
+	}
+   	
    	connected = false;
    }
  
