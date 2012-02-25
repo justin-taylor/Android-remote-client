@@ -5,6 +5,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -34,9 +35,9 @@ public class ClientListener implements Runnable{
 		framesPerSecond = fps;
 		
 		try{
-			String ip = getLocalIpAddress();
+			
+			serverAddr = getLocalIpAddress();
 			dgp = new DatagramPacket(buf, buf.length);
-			serverAddr = InetAddress.getByName(ip);
 
 		}catch (Exception e){
 			Log.e("ClientActivity", "C: Error", e);
@@ -55,7 +56,6 @@ public class ClientListener implements Runnable{
 	           int frames = 1000/framesPerSecond;
 	           
 	           Log.e("FRAMES", ""+frames);
-	           
 	           timer.scheduleAtFixedRate(getImageTask, 0, frames);
 	           
 	           listen();	           
@@ -96,10 +96,11 @@ public class ClientListener implements Runnable{
 	   			socket.receive(dgp);
 	   			Bitmap bm = BitmapFactory.decodeByteArray(dgp.getData(), 0, 65000);
 	   			delegate.getController().setImage(bm);
-	   			Log.d("Testing", "Received image");
+	   			
+	   			Log.e("Testing", "Received image");
 
 	   		}catch(Exception e){
-	   			Log.d("Error", "Could not receive image");
+	   			Log.e("Error", "Could not receive image");
 	   			e.printStackTrace();
 	   		}
 	   	}
@@ -107,15 +108,16 @@ public class ClientListener implements Runnable{
 
 	
 	
-   public static String getLocalIpAddress() {
+   public static InetAddress getLocalIpAddress() {
 	    try {
 	        for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
 	            NetworkInterface intf = en.nextElement();
 	            for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
 	                InetAddress inetAddress = enumIpAddr.nextElement();
-	                if (!inetAddress.isLoopbackAddress()) {
-	                	Log.d("HERRO", inetAddress.getHostAddress().toString());
-	                    return inetAddress.getHostAddress().toString();
+	                if (!inetAddress.isLoopbackAddress() && !inetAddress.toString().contains(":"))
+	                {
+	                	Log.e("IP Address", ""+inetAddress);
+	                    return inetAddress;
 	                }
 	            }
 	        }
