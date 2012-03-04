@@ -6,7 +6,7 @@
    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE">  </uses-permission>
    
-   <application android:name=".AppDelegate"
+   <application android:name="org.tayloredapps.remoteclient.AppDelegate"
    		 android:icon="@drawable/icon"
          android:label="@string/app_name"
          android:theme="@android:style/Theme.NoTitleBar" android:debuggable="true">
@@ -19,7 +19,7 @@
          </intent-filter>
       </activity>
       
-      <activity android:name=".Controller" android:configChanges="keyboardHidden|keyboard|orientation">
+      <activity android:name="org.tayloredapps.remoteclient.Controller" android:configChanges="keyboardHidden|keyboard|orientation">
       </activity>
    
    </application>

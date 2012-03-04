@@ -1,4 +1,4 @@
-package org.example.touch;
+package org.tayloredapps.remoteclient;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;

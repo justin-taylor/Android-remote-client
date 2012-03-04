@@ -2,13 +2,13 @@
 // 	This software can be distributed under the terms of the
 // 	GNU General Public License. 
 
-package org.example.touch;
+package org.tayloredapps.remoteclient;
 
 import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
 
-import org.example.touch.ClientThread;
+import org.tayloredapps.remoteclient.ClientThread;
 
 public class AppDelegate extends Application {
 	

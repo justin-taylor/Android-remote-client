@@ -2,7 +2,9 @@
 // 	This software can be distributed under the terms of the
 // 	GNU General Public License. 
 
-package org.example.touch;
+package org.tayloredapps.remoteclient;
+
+import org.example.touch.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;
