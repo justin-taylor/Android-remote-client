@@ -1,5 +1,3 @@
 Send messages over a UDP socket to a listening server. These messages will either request to make a simple user interation (mouse click, type on keyboard), or request a screencapture of the current mouse location.
 
 see: https://github.com/justin-taylor/Remote-Desktop-Server
-
-Currently there is an issue with the scrren capture not working on android 4.0 (Samsung Galaxy nexus)
