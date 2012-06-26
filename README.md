@@ -12,7 +12,7 @@ this to run properly. The DesktopRemoteServer which runs on the users desktop
 machine, and the Touchapp which runs on the user's Android device
 
 ## Remote Desktop Server
-(https://github.com/justin-taylor/Remote-Desktop-Server)
+https://github.com/justin-taylor/Remote-Desktop-Server
 This project must be imported into the eclipse workspace for the android
 application to be ran.
 
