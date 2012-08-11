@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 
-import android.util.Log;
 import android.view.View.OnTouchListener;
 import android.view.View.OnKeyListener;
 import android.view.*;
@@ -185,7 +184,7 @@ public class Controller extends Activity implements OnTouchListener, OnKeyListen
 	public void setImage(final Bitmap bit){
 		Handler handler = new Handler(Looper.getMainLooper());
 		handler.post(new Runnable() {
-			@Override
+
 			public void run() {
 				LinearLayout layout = (LinearLayout) findViewById(R.id.TouchPad);
 				BitmapDrawable drawable = new BitmapDrawable( bit );

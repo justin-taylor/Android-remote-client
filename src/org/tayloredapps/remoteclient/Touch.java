@@ -27,8 +27,6 @@ public class Touch extends Activity{
 	private CheckBox useScreenCap;
 	private EditText frameRate;
 	
-	private boolean firstRun = true;
-	
 	public static final String PREFS_NAME 		= "TouchSettings";
 	
 	public static final String IP_PREF 			= "ip_pref";
@@ -122,7 +120,6 @@ public class Touch extends Activity{
 	@Override
 	protected void onPause(){
 		super.onPause();
-		firstRun = false;
 	}
 	
 	
