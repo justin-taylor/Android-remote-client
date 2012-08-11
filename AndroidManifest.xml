@@ -11,7 +11,7 @@
          android:label="@string/app_name"
          android:theme="@android:style/Theme.NoTitleBar" android:debuggable="true">
       
-      <activity android:name=".Touch"
+      <activity android:name="org.tayloredapps.remoteclient.Touch"
             android:label="@string/app_name" android:screenOrientation="portrait">
          <intent-filter>
             <action android:name="android.intent.action.MAIN" />
@@ -19,7 +19,8 @@
          </intent-filter>
       </activity>
       
-      <activity android:name="org.tayloredapps.remoteclient.Controller" android:configChanges="keyboardHidden|keyboard|orientation">
+      <activity android:name="org.tayloredapps.remoteclient.Controller" 
+          android:configChanges="keyboardHidden|keyboard|orientation">
       </activity>
    
    </application>
