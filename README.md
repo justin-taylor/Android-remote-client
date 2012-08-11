@@ -11,6 +11,14 @@ computer from an Android device. There are two pieces of software needed for
 this to run properly. The DesktopRemoteServer which runs on the users desktop
 machine, and the Touchapp which runs on the user's Android device
 
+## Deliverables
+What's that? You just want to use the app!?! You don't want to mess with the
+hassle of eclipse? In that case just download
+http://central.tayloredapps.org/server.jar and run it on any desktop that has
+JRE installed. Then mosy on over and download
+http://central.tayloredapps.org/Android-remote-client.apk to your android
+device.
+
 ## Remote Desktop Server
 https://github.com/justin-taylor/Remote-Desktop-Server
 This project must be imported into the eclipse workspace for the android
