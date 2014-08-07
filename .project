@@ -3,7 +3,6 @@
 	<name>Touch</name>
 	<comment></comment>
 	<projects>
-		<project>DesktopRemoteServer</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

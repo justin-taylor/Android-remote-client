@@ -11,6 +11,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.DisplayMetrics;
+import android.util.Log;
 
 import android.view.View.OnTouchListener;
 import android.view.View.OnKeyListener;
@@ -34,6 +36,7 @@ public class Controller extends Activity implements OnTouchListener, OnKeyListen
 	float lastYpos = 0;
 	
 	private int mouse_sensitivity = 1;
+	private float screenRatio = 1.0f;
 	
 	boolean keyboard = false;
 	Thread checking;
@@ -50,6 +53,7 @@ public class Controller extends Activity implements OnTouchListener, OnKeyListen
 	    setContentView(R.layout.control);
 		
 	    mouse_sensitivity = getIntent().getExtras().getInt("sensitivity");
+	    screenRatio = getIntent().getExtras().getFloat("ratio");
 	    
 	    // Set the width of the buttons to half the screen size
 	 	Display display = getWindowManager().getDefaultDisplay(); 
@@ -69,7 +73,7 @@ public class Controller extends Activity implements OnTouchListener, OnKeyListen
 	 	
 	    View touchView = (View) findViewById(R.id.TouchPad);
 	    touchView.setOnTouchListener(this);
-	    
+
 	    EditText editText = (EditText) findViewById(R.id.KeyBoard);
 	    editText.setOnKeyListener(this);
 	    editText.addTextChangedListener(new TextWatcher(){
@@ -85,8 +89,23 @@ public class Controller extends Activity implements OnTouchListener, OnKeyListen
 	        }
 	    });
 	    
+	    setImageRequestSizes();
 	    AppDelegate appDel = ((AppDelegate)getApplicationContext());
 	    appDel.setController( this );
+	}
+		
+	private void setImageRequestSizes() {
+		DisplayMetrics metrics = new DisplayMetrics();
+		WindowManager wm = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
+		Display display = wm.getDefaultDisplay();
+		display.getMetrics(metrics);
+		int width, height; 
+		width = metrics.widthPixels;
+		height = metrics.heightPixels;
+		
+		ClientListener.deviceWidth = (int)(screenRatio * width);
+	    ClientListener.deviceHeight = (int)(screenRatio * height);
+	    Log.e("REQUESTINGSIZE", screenRatio+" "+ ClientListener.deviceWidth+" "+ClientListener.deviceHeight);
 	}
 	
 	public void finish()
@@ -98,15 +117,7 @@ public class Controller extends Activity implements OnTouchListener, OnKeyListen
 	}
 	
 	public void onConfigurationChanged(Configuration newConfig) {
-		Display display = getWindowManager().getDefaultDisplay(); 
-	 	int width = display.getWidth();
-	 	
-	 	Left.setWidth(width/2);
-	 	Right.setWidth(width/2);
-	 	
-	 	ClientListener.deviceWidth = width;
-	 	ClientListener.deviceHeight = display.getHeight() - Left.getHeight();
-	 	
+	    setImageRequestSizes();
 	 	super.onConfigurationChanged(newConfig);
 	}
 	

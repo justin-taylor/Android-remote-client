@@ -54,7 +54,6 @@ public class ClientListener implements Runnable{
 	           Timer timer = new Timer();
 	           int frames = 1000/framesPerSecond;
 	           
-	           Log.e("FRAMES", ""+frames);
 	           timer.scheduleAtFixedRate(getImageTask, 0, frames);
 	           
 	           listen();	           
@@ -77,7 +76,6 @@ public class ClientListener implements Runnable{
 					 Constants.DELIMITER+
 					 deviceHeight+"");
 			
-			Log.d("MESSAGE", message);
 			
 			 delegate.sendMessage(message);
 		}
@@ -87,19 +85,14 @@ public class ClientListener implements Runnable{
 	
 	private void listen()
 	{
-	   	Log.e("LISTENING", "LISTEING at "+serverAddr.getHostAddress()+" on "+serverPort);
-
 	   	while(connected){
 
 	   		try{
 	   			socket.receive(dgp);
 	   			Bitmap bm = BitmapFactory.decodeByteArray(dgp.getData(), 0, 65000);
+	   			Log.e("REQUESTINGSIZE", "SIZERECV: "+bm.getWidth()+" "+bm.getHeight());
 	   			delegate.getController().setImage(bm);
-	   			
-	   			Log.e("Testing", "Received image");
-
 	   		}catch(Exception e){
-	   			Log.e("Error", "Could not receive image");
 	   			e.printStackTrace();
 	   		}
 	   	}
@@ -115,7 +108,6 @@ public class ClientListener implements Runnable{
 	                InetAddress inetAddress = enumIpAddr.nextElement();
 	                if (!inetAddress.isLoopbackAddress() && !inetAddress.toString().contains(":"))
 	                {
-	                	Log.e("IP Address", ""+inetAddress);
 	                    return inetAddress;
 	                }
 	            }
@@ -129,8 +121,12 @@ public class ClientListener implements Runnable{
    
    
    public void closeSocket(){
-	   	socket.close();
-	   	connected = false;
-	   	getImageTask.cancel();
+	   if(socket != null) {
+		   socket.close();
+	   }
+	   connected = false;
+	   if(getImageTask != null) {
+		   getImageTask.cancel();
+	   }
    }
 }

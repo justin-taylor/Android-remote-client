@@ -20,7 +20,7 @@
       </activity>
       
       <activity android:name="org.tayloredapps.remoteclient.Controller" 
-          android:configChanges="keyboardHidden|keyboard|orientation">
+          android:configChanges="keyboardHidden|keyboard">
       </activity>
    
    </application>

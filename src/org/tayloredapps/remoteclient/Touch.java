@@ -26,6 +26,7 @@ public class Touch extends Activity{
 	private SeekBar sensitivity;
 	private CheckBox useScreenCap;
 	private EditText frameRate;
+	private EditText screenRatio;
 	
 	public static final String PREFS_NAME 		= "TouchSettings";
 	
@@ -36,6 +37,7 @@ public class Touch extends Activity{
 	public static final String LISTENER_PORT_PREF 	= "listener_pref";
 	public static final String USE_SCREEN_CAP_PREF 	= "screen_pref";
 	public static final String FRAME_RATE_PREF 		= "rate_pref";
+	public static final String SCREEN_RATIO_PREF 		= "ratio_pref";
 
 	
 /***********************************************************************************
@@ -51,6 +53,7 @@ public class Touch extends Activity{
 		
 		ipField = (EditText) findViewById(R.id.EditText01);
 		portField = (EditText) findViewById(R.id.EditText02);
+		screenRatio = (EditText) findViewById(R.id.screenRatio);
 		sensitivity = (SeekBar) findViewById(R.id.SeekBar01);
 		
 		
@@ -71,6 +74,7 @@ public class Touch extends Activity{
 				editor.putInt(SENSITIVITY_PREF, sensitivity.getProgress());
 				editor.putString(PORT_PREF, portField.getText().toString());
 				editor.putString(IP_PREF, ipField.getText().toString());
+				editor.putFloat(SCREEN_RATIO_PREF, Float.parseFloat(screenRatio.getText().toString()));
 				
 				editor.putString(LISTENER_PORT_PREF, listenerPortField.getText().toString());
 				editor.putInt(FRAME_RATE_PREF, Integer.parseInt( frameRate.getText().toString()) );
@@ -102,7 +106,8 @@ public class Touch extends Activity{
 	    
 	    boolean useCap = prefs.getBoolean(USE_SCREEN_CAP_PREF, true);
 	    int framerate = prefs.getInt(FRAME_RATE_PREF, 10);
-	    
+	    float ratio = prefs.getFloat(SCREEN_RATIO_PREF, 1.0f);
+	   
 	    int sens = prefs.getInt(SENSITIVITY_PREF, 0);
 		
 		ipField.setText(ip);
@@ -112,7 +117,8 @@ public class Touch extends Activity{
 		listenerPortField.setText(listener);
 	    frameRate.setText(framerate+"");
 	    useScreenCap.setChecked(useCap);
-		
+	    screenRatio.setText(ratio+"");
+	    
 		AppDelegate appDel = ((AppDelegate)getApplicationContext());		
 		appDel.stopServer();
 	}
@@ -178,6 +184,7 @@ public class Touch extends Activity{
 			int serverPort = Integer.parseInt(portField.getText().toString());
 			int listenPort = Integer.parseInt(listenerPortField.getText().toString());
 			int fps = Integer.parseInt(frameRate.getText().toString());
+			
 			appDel.createClientThread(serverIp, serverPort);
 			
 			if(useScreenCap.isChecked())
@@ -191,8 +198,11 @@ public class Touch extends Activity{
 		int x;
 		for(x=0;x<4;x++){// every quarter second for one second check if the server is reachable
 			if(appDel.connected()){
+
 				Intent controller = new Intent(Touch.this, Controller.class);
 				controller.putExtra("sensitivity" , Math.round( sensitivity.getProgress() /20) + 1);
+				controller.putExtra("ratio" , Float.parseFloat(screenRatio.getText().toString()));
+
 				startActivity( controller );
 				x = 6;
 			}

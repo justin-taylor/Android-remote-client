@@ -115,6 +115,19 @@
 			  		android:maxWidth="230dp" 
 			  		android:minWidth="230dp" 
 			  		android:textStyle="normal" /> 
+			  		
+			  		<TextView android:text="Screen Ratio:" android:id="@+id/TextView03" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textStyle="bold" android:textSize="20dp" /> 
+			  		<EditText 
+			  		android:layout_height="wrap_content" 
+			  		android:text="@+id/EditText03" 
+			  		android:id="@+id/screenRatio" 
+			  		android:layout_width="fill_parent" 
+			  		android:phoneNumber="true" 
+			  		android:maxWidth="230dp" 
+			  		android:minWidth="230dp" 
+			  		android:textStyle="normal" /> 
+			  		
+			  		
 					</LinearLayout>
 			</LinearLayout>
         </LinearLayout>
