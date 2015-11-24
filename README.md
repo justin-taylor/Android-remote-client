@@ -66,7 +66,7 @@ divided into three classes.
 
 *（1）下载Android-remote-client后，导入到ADT中。
 
-*（2）还需要去下载Remote-Desktop-Server（https://github.com/justin-taylor/Remote-Desktop-Server），在Eclipse中导入Remote-Desktop-Server，并生成XXX.jar包，将XXX.jar包复制粘贴到Android-remote-client项目中。
+*（2）还需要去下载Remote-Desktop-Server（https://github.com/justin-taylor/Remote-Desktop-Server） ，在Eclipse中导入Remote-Desktop-Server，并生成XXX.jar包，将XXX.jar包复制粘贴到Android-remote-client项目中。
 
 *（3）右键Android-remote-client工程，Build path,Configure Build Path,java build path；
 
